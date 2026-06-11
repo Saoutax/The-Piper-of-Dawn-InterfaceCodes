@@ -6,7 +6,7 @@ const REPO = 'The-Piper-of-Dawn-InterfaceCodes';
 const FILE_PATH = 'src/gadgets/libDiff/Gadget-libDiff.js';
 const MAIN_BRANCH = 'main';
 
-export const updateDiff = async (): Promise<void> => {
+const updateDiff = async () => {
     const token = process.env['GITHUB_TOKEN'];
     if (!token) {
         console.error('❌ GITHUB_TOKEN environment variable is not set');
@@ -60,35 +60,9 @@ export const updateDiff = async (): Promise<void> => {
     console.log(`   CDN content fetched: ${(cdnContent.length / 1024).toFixed(1)} KB`);
 
     if (currentContent !== undefined && currentContent === cdnContent) {
-        console.log('✅ Content is already up-to-date. No PR needed.');
+        console.log('✅ Content is already up-to-date. No commit needed.');
         return;
     }
-
-    const branchName = `chore/update-diff-v${latestVersion}`;
-    console.log(`🌿 Creating branch: ${branchName}`);
-
-    try {
-        await octokit.rest.git.deleteRef({
-            owner: OWNER,
-            repo: REPO,
-            ref: `heads/${branchName}`,
-        });
-        console.log('   Deleted existing branch.');
-    } catch {}
-
-    const { data: refData } = await octokit.rest.git.getRef({
-        owner: OWNER,
-        repo: REPO,
-        ref: `heads/${MAIN_BRANCH}`,
-    });
-
-    await octokit.rest.git.createRef({
-        owner: OWNER,
-        repo: REPO,
-        ref: `refs/heads/${branchName}`,
-        sha: refData.object.sha,
-    });
-    console.log('   Branch created.');
 
     console.log('📝 Writing file...');
     await octokit.rest.repos.createOrUpdateFileContents({
@@ -97,37 +71,10 @@ export const updateDiff = async (): Promise<void> => {
         path: FILE_PATH,
         message: `chore: update diff library to v${latestVersion}`,
         content: Buffer.from(cdnContent).toString('base64'),
-        branch: branchName,
+        branch: MAIN_BRANCH,
         ...(currentSha ? { sha: currentSha } : {}),
     });
-    console.log('   File updated.');
-
-    console.log('📎 Creating PR...');
-
-    const { data: existingPrs } = await octokit.rest.pulls.list({
-        owner: OWNER,
-        repo: REPO,
-        head: branchName,
-        base: MAIN_BRANCH,
-        state: 'open',
-    });
-
-    if (existingPrs.length > 0) {
-        console.log(`   PR #${existingPrs[0]!.number} already exists, skip creation.`);
-        return;
-    }
-
-    const { data: pr } = await octokit.rest.pulls.create({
-        owner: OWNER,
-        repo: REPO,
-        title: `chore: update diff library to v${latestVersion}`,
-        head: branchName,
-        base: MAIN_BRANCH,
-        body: `Updates the vendored \`diff\` library to v${latestVersion}.
-
-Source: [npm/diff@${latestVersion}](https://www.npmjs.com/package/diff/v${latestVersion})
-Size: ${(cdnContent.length / 1024).toFixed(1)} KB`,
-    });
-
-    console.log(`✅ PR created: #${pr.number} - ${pr.html_url}`);
+    console.log(`✅ File updated to v${latestVersion} (${(cdnContent.length / 1024).toFixed(1)} KB)`);
 };
+
+export { updateDiff };
