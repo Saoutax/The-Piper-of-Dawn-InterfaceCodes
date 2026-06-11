@@ -1,0 +1,8 @@
+- section: User
+  gadgets:
+      - BWikiUser
+      - difftool
+
+- section: Site
+  gadgets:
+      - libDiff

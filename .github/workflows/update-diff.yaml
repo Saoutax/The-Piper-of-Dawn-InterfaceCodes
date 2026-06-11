@@ -1,0 +1,29 @@
+name: 'Update diff library'
+
+on:
+    schedule:
+        - cron: '0 0 * * 0'
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    update-diff:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - uses: pnpm/action-setup@v6
+            - name: Set Node Version
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 24.x
+                  cache: pnpm
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run Update Script
+              run: pnpm tsx scripts/run.ts --mode=update-diff
+              env:
+                  GITHUB_TOKEN: ${{ github.token }}

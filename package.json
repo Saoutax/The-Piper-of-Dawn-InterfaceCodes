@@ -1,0 +1,50 @@
+{
+    "name": "interface-codes",
+    "keywords": [
+        "BWiki",
+        "MediaWiki",
+        "MediaWiki Gadgets",
+        "The Piper of Dawn"
+    ],
+    "license": "MIT",
+    "author": "Saoutax",
+    "type": "module",
+    "scripts": {
+        "build": "tsx scripts/run.ts --mode=build",
+        "deploy": "pnpm run build && tsx scripts/run.ts --mode=deploy",
+        "fmt": "oxfmt",
+        "lint": "oxlint"
+    },
+    "dependencies": {
+        "@swc/core": "^1.15.18",
+        "crypto-js": "^4.2.0",
+        "dotenv": "^17.3.1",
+        "fast-glob": "^3.3.3",
+        "js-yaml": "^4.1.1",
+        "lightningcss": "^1.32.0",
+        "minimist": "^1.2.8",
+        "mwn": "^3.0.1",
+        "octokit": "^5.0.5",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3"
+    },
+    "devDependencies": {
+        "@types/crypto-js": "^4.2.2",
+        "@types/jquery": "^4.0.0",
+        "@types/js-yaml": "^4.0.9",
+        "@types/minimist": "^1.2.5",
+        "@types/node": "^25.5.0",
+        "browserslist": "^4.28.2",
+        "oxfmt": "^0.54.0",
+        "oxlint": "^1.69.0",
+        "oxlint-tsgolint": "^0.23.0",
+        "types-mediawiki": "^2.0.0"
+    },
+    "devEngines": {
+        "packageManager": {
+            "name": "pnpm",
+            "version": "^11.5.0",
+            "onFail": "download"
+        }
+    }
+}

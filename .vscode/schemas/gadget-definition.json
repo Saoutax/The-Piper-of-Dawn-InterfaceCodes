@@ -1,0 +1,100 @@
+{
+    "$id": "gadget-definition.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "小工具定义",
+    "additionalProperties": false,
+    "required": ["ResourceLoader", "hidden", "default", "type", "rights", "dependencies", "enable", "files"],
+    "properties": {
+        "ResourceLoader": {
+            "type": "boolean",
+            "default": true,
+            "title": "一般为 true 即可",
+            "examples": [true, false]
+        },
+        "hidden": {
+            "type": "boolean",
+            "default": false,
+            "title": "是否与参数设置中隐藏",
+            "examples": [false, true]
+        },
+        "default": {
+            "type": "boolean",
+            "default": false,
+            "title": "是否默认开启该小工具",
+            "examples": [false, true]
+        },
+        "type": {
+            "type": "string",
+            "default": "general",
+            "title": "type 指定小工具类型，\"general\" 是普通型（JS 和 CSS 会通过 JS 加载），\"styles\" 是纯 CSS 型（JS 不会被加载，CSS 文件的链接会直接嵌入页面）",
+            "enum": ["general", "styles"],
+            "examples": ["general", "styles"]
+        },
+        "rights": {
+            "type": "array",
+            "default": [],
+            "title": "启用小工具所需要的用户权限，如无需权限可保留空数组，但不能删去",
+            "uniqueItems": true,
+            "minItems": 0,
+            "items": {
+                "type": "string",
+                "title": "每个权限一个元素"
+            },
+            "examples": [[]]
+        },
+        "dependencies": {
+            "type": "array",
+            "default": [],
+            "title": "小工具的依赖项，如无需依赖项可保留空数组，但不能删去",
+            "uniqueItems": true,
+            "minItems": 0,
+            "items": {
+                "type": "string",
+                "title": "A dependency",
+                "examples": ["mediawiki.api", "mediawiki.user"]
+            },
+            "examples": [["mediawiki.api", "mediawiki.user"]]
+        },
+        "enable": {
+            "type": "boolean",
+            "default": true,
+            "title": "是否启用",
+            "examples": [false, true]
+        },
+        "files": {
+            "type": "array",
+            "default": [],
+            "title": "小工具文件名称，不带Gadget-前缀",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "title": "每个文件一个元素"
+            },
+            "examples": [["CleanDeleteReasons.js"]]
+        }
+    },
+    "default": {
+        "ResourceLoader": true,
+        "hidden": false,
+        "default": false,
+        "type": "general",
+        "rights": [],
+        "dependencies": [],
+        "enable": true,
+        "files": []
+    },
+    "examples": [
+        {
+            "ResourceLoader": true,
+            "hidden": false,
+            "default": true,
+            "type": "general",
+            "rights": ["delete"],
+            "dependencies": ["mediawiki.api", "mediawiki.user"],
+            "enable": true,
+            "files": ["CleanDeleteReasons.js"]
+        }
+    ]
+}

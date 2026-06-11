@@ -1,0 +1,17 @@
+ResourceLoader: true
+
+hidden: false
+
+default: true
+
+type: general
+
+rights: []
+
+dependencies:
+    - ext.gadget.libDiff
+
+enable: true
+
+files:
+    - Gadget-difftool.js

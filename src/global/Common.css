@@ -1,0 +1,13 @@
+/* 移除所有受 -webkit-focus-ring-color 影响元素的outline，搬运自 tools */
+a:focus,
+input[type='file']:focus,
+input[type='checkbox']:focus,
+input[type='radio']:focus,
+.btn:focus,
+.btn.active:focus,
+.btn.focus,
+.toctogglecheckbox:focus + .toctitle .toctogglelabel,
+.vectorMenuCheckbox:focus + h3,
+.vector-menu-checkbox:focus + h3 {
+    outline: none;
+}
