@@ -5,12 +5,21 @@ on:
         branches:
             - main
     workflow_dispatch:
+        inputs:
+            message:
+                description: 'Commit message'
+                required: false
+                type: string
+            author:
+                description: 'Commit author'
+                required: false
+                type: string
 
 env:
     USERAGENT: ${{ secrets.USERAGENT }}
     SESSDATA: ${{ secrets.SESSDATA }}
-    COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-    COMMIT_AUTHOR: ${{ github.event.head_commit.author.username || github.actor }}
+    COMMIT_MESSAGE: ${{ github.event.head_commit.message || inputs.message }}
+    COMMIT_AUTHOR: ${{ github.event.head_commit.author.username || inputs.author || github.actor }}
 
 jobs:
     deploy:
