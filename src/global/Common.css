@@ -1,3 +1,47 @@
+/* 背景图片 */
+body {
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://patchwiki.biligame.com/images/pod/2/23/nayx4zzcdrz4ja2qv11hj0344jfo85h.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+}
+
+/* 游戏中心导航、右侧导航、wiki自带的导航 */
+.bui-sns-info,
+.bili-game-header-nav .bili-game-header-nav-bar,
+.wiki-header.navbar.navbar-default.navbar-static-top.container {
+    display: none !important;
+}
+
+/* 内容区域 */
+.game-bg.container {
+    flex: 1 0 auto;
+    background-color: rgba(212, 163, 81, 0.3);
+    margin-top: 30px;
+    margin-bottom: 20px;
+    width: 85%;
+    box-sizing: border-box;
+    border-radius: 15px;
+}
+
+#content.mw-body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 底部 */
+.footer-public {
+    flex-shrink: 0;
+    background: linear-gradient(to top, rgba(212, 163, 81, 0.5), rgba(212, 163, 81, 0));
+    background: transparent;
+}
+
 /* 移除所有受 -webkit-focus-ring-color 影响元素的outline，搬运自 tools */
 a:focus,
 input[type='file']:focus,
