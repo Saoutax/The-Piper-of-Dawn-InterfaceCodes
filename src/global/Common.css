@@ -9,10 +9,12 @@ body {
     background-position: center center;
 }
 
-/* 游戏中心导航、右侧导航、wiki自带的导航 */
+/* 游戏中心导航、右侧导航、wiki自带的导航、APP相关 */
 .bui-sns-info,
 .bili-game-header-nav .bili-game-header-nav-bar,
-.wiki-header.navbar.navbar-default.navbar-static-top.container {
+.wiki-header.navbar.navbar-default.navbar-static-top.container,
+#wikiToapp,
+.btn-open-app {
     display: none !important;
 }
 
