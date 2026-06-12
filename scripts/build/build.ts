@@ -99,7 +99,7 @@ const buildWidgets = async () => {
             let output = '';
 
             try {
-                const desc = await readFile(resolve(dir, 'description.wikitext'), 'utf-8');
+                const desc = await readFile(resolve(dir, 'description.wiki'), 'utf-8');
                 output += `<noinclude>${desc.trimEnd()}</noinclude>`;
             } catch {
                 /* optional */
@@ -143,7 +143,7 @@ const buildWidgets = async () => {
 
             output += `<includeonly><!--{if !isset($${varName}) || !$${varName}}--><!--{assign var="${varName}" value=true scope="global"}-->${inner}<!--{/if}--></includeonly>`;
 
-            await writeFile(resolve(DIST_DIR, 'widgets', entryName), output, 'utf-8');
+            await writeFile(resolve(DIST_DIR, 'widgets', name), output, 'utf-8');
         }),
     );
 };
