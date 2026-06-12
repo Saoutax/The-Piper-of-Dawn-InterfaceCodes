@@ -3,6 +3,10 @@
       - BWikiUser
       - difftool
 
+- section: Admin
+  gadgets:
+      - CleanDeleteReason
+
 - section: Site
   gadgets:
       - libDiff

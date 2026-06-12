@@ -1,1 +1,0 @@
-在[[Special:Preferences|参数设置]]、[[Special:Gadgets|小工具]]等默认不加载站点 CSS 的页面加载全站样式
