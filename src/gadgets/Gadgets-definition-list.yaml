@@ -9,5 +9,4 @@
 
 - section: Site
   gadgets:
-      - SiteTemplate
       - libDiff
