@@ -3,6 +3,10 @@
       - BWikiUser
       - difftool
 
+- section: Edit
+  gadgets:
+      - CtrlS
+
 - section: Admin
   gadgets:
       - CleanDeleteReason
