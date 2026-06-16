@@ -6,6 +6,7 @@
 - section: Edit
   gadgets:
       - CtrlS
+      - HotCat
 
 - section: Admin
   gadgets:
