@@ -15,3 +15,5 @@
 - section: Site
   gadgets:
       - libDiff
+      - libNanoSettings
+      - libBilibiliVideo

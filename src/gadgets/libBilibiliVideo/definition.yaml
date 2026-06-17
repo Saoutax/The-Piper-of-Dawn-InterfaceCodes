@@ -1,0 +1,18 @@
+ResourceLoader: true
+
+hidden: true
+
+default: false
+
+type: general
+
+rights: []
+
+dependencies:
+    - ext.gadget.libNanoSettings
+
+enable: true
+
+files:
+    - Gadget-libNanoSDK.js
+    - Gadget-libPlayerUtil.js

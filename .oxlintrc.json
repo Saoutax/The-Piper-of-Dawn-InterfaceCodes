@@ -16,5 +16,5 @@
     "options": {
         "typeAware": true
     },
-    "ignorePatterns": ["src/gadgets/libDiff"]
+    "ignorePatterns": ["dist", "src/gadgets/libDiff", "src/gadgets/libBilibiliVideo"]
 }

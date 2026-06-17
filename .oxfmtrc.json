@@ -1,11 +1,13 @@
 {
     "$schema": "./node_modules/oxfmt/configuration_schema.json",
     "ignorePatterns": [
+        "dist",
         "node_modules/",
         "pnpm-lock.yaml",
         "tsconfig.json",
         ".vscode/settings.json",
-        "src/gadgets/libDiff"
+        "src/gadgets/libDiff",
+        "src/gadgets/libBilibiliVideo"
     ],
     "printWidth": 120,
     "tabWidth": 4,
