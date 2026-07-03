@@ -116,7 +116,7 @@ const buildWidgets = async () => {
                     minify: true,
                     sourceMap: false,
                 });
-                inner += `<styles>\n${String(code)}\n</styles>`;
+                inner += `<style>\n${String(code)}\n</style>`;
             } catch {
                 /* optional */
             }
@@ -134,7 +134,7 @@ const buildWidgets = async () => {
                 }
             }
             if (jsCode) {
-                inner += `<scripts>\n${jsCode.trimEnd()}\n</scripts>`;
+                inner += `<script>\n${jsCode.trimEnd()}\n</script>`;
             }
 
             if (!inner) {
