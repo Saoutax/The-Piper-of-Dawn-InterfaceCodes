@@ -15,63 +15,63 @@
 
 .bwiki-user-group-bureaucrat {
     color: #6610f2;
-}
-.bwiki-user-group-bureaucrat::before {
-    content: '行';
+    &::before {
+        content: '行';
+    }
 }
 
 .bwiki-user-group-checkuser {
     color: #673ab7;
-}
-.bwiki-user-group-checkuser::before {
-    content: '查';
+    &::before {
+        content: '查';
+    }
 }
 
 .bwiki-user-group-suppress {
     color: #9c27b0;
-}
-.bwiki-user-group-suppress::before {
-    content: '监';
+    &::before {
+        content: '监';
+    }
 }
 
 .bwiki-user-group-sysop {
     color: #ec407a;
-}
-.bwiki-user-group-sysop::before {
-    content: '管';
+    &::before {
+        content: '管';
+    }
 }
 
 .bwiki-user-group-interface-admin {
     color: #f55b42;
-}
-.bwiki-user-group-interface-admin::before {
-    content: '界';
+    &::before {
+        content: '界';
+    }
 }
 
 .bwiki-user-group-widgeteditor {
     color: #b39fda;
-}
-.bwiki-user-group-widgeteditor::before {
-    content: '部';
+    &::before {
+        content: '部';
+    }
 }
 
 .bwiki-user-group-moderator {
     color: #f77f38;
-}
-.bwiki-user-group-moderator::before {
-    content: '审';
+    &::before {
+        content: '审';
+    }
 }
 
 .bwiki-user-group-automoderated {
     color: #1aa179;
-}
-.bwiki-user-group-automoderated::before {
-    content: '免';
+    &::before {
+        content: '免';
+    }
 }
 
 .bwiki-user-group-bot {
     color: #1e88e5;
-}
-.bwiki-user-group-bot::before {
-    content: '机';
+    &::before {
+        content: '机';
+    }
 }
