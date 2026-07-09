@@ -4,14 +4,6 @@ interface User {
     groups: string[];
 }
 
-interface UserGroup {
-    [groupname: string]: {
-        label: string;
-        color: string;
-        name: string;
-    };
-}
-
 interface CacheEntry<T> {
     data: T;
     expiry: number;
@@ -54,25 +46,17 @@ function cacheSet<T>(key: string, data: T, ttl: number): void {
     const { wgUserGroups, wgDBname } = mw.config.get(['wgUserGroups', 'wgDBname']);
     const hasApiHighLimits = wgUserGroups?.includes('sysop') || wgUserGroups?.includes('bot');
 
-    const userGroup: UserGroup = {
-        bureaucrat: { label: '行', color: '#6610f2', name: '行政员' },
-        checkuser: { label: '查', color: '#673ab7', name: '用户查核员' },
-        suppress: { label: '监', color: '#9c27b0', name: '监督员' },
-        sysop: { label: '管', color: '#ec407a', name: '管理员' },
-        'interface-admin': {
-            label: '界',
-            color: '#f55b42',
-            name: '界面管理员',
-        },
-        widgeteditor: { label: '部', color: '#b39fda', name: '小部件编辑者' },
-        moderator: { label: '审', color: '#f77f38', name: '版主' },
-        automoderated: { label: '免', color: '#1aa179', name: '自动版主化用户' },
-        bot: { label: '机', color: '#1e88e5', name: '机器人' },
+    const userGroup: Record<string, string> = {
+        bureaucrat: '行政员',
+        checkuser: '用户查核员',
+        suppress: '监督员',
+        sysop: '管理员',
+        'interface-admin': '界面管理员',
+        widgeteditor: '小部件编辑者',
+        moderator: '版主',
+        automoderated: '自动版主化用户',
+        bot: '机器人',
     };
-
-    const style = document.createElement('style');
-    style.textContent = `.buser_avatar img{height:24px;width:auto;margin:2px;border-radius:15px;border:1px solid #daa52040;image-rendering:auto}`;
-    document.head.appendChild(style);
 
     const allUserNames: Set<string> = new Set();
     const nicknameMap = new Map<string, string>();
@@ -156,16 +140,8 @@ function cacheSet<T>(key: string, data: T, ttl: number): void {
                         sup.className = 'bwiki-user-group';
                         const group = userGroup[key]!;
                         const span = document.createElement('span');
-                        Object.assign(span, {
-                            title: group.name,
-                            textContent: group.label,
-                        });
-                        Object.assign(span.style, {
-                            color: group.color,
-                            fontSize: '110%',
-                            cursor: 'help',
-                            marginLeft: '1px',
-                        });
+                        span.className = `bwiki-user-group-${key}`;
+                        span.title = group;
                         sup.appendChild(span);
                         element.after(sup);
                     }
