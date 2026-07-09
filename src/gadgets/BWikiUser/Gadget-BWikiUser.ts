@@ -13,8 +13,11 @@ interface UserGroup {
 }
 
 (async () => {
+    const wgUserGroups = mw.config.get('wgUserGroups');
+    const hasApiHighLimits = wgUserGroups?.includes('sysop') || wgUserGroups?.includes('bot');
+
     const userGroup: UserGroup = {
-        bureaucrat: { label: '政', color: '#6610f2', name: '行政员' },
+        bureaucrat: { label: '行', color: '#6610f2', name: '行政员' },
         checkuser: { label: '查', color: '#673ab7', name: '用户查核员' },
         suppress: { label: '监', color: '#9c27b0', name: '监督员' },
         sysop: { label: '管', color: '#ec407a', name: '管理员' },
@@ -199,17 +202,28 @@ interface UserGroup {
 
         const newUsers = [...allUserNames].filter(u => !beforeKnownUsers.has(u));
         if (newUsers.length > 0) {
-            const {
-                query: { users },
-            } = await new mw.Api().post({
-                action: 'query',
-                list: 'users',
-                ususers: newUsers.join('|'),
-                usprop: 'groups',
-                format: 'json',
-                formatversion: '2',
+            const chunkSize = hasApiHighLimits ? 500 : 50;
+            const chunks: string[][] = [];
+            for (let i = 0; i < newUsers.length; i += chunkSize) {
+                chunks.push(newUsers.slice(i, i + chunkSize));
+            }
+
+            const results = await Promise.all(
+                chunks.map(chunk =>
+                    new mw.Api().post({
+                        action: 'query',
+                        list: 'users',
+                        ususers: chunk.join('|'),
+                        usprop: 'groups',
+                        format: 'json',
+                        formatversion: '2',
+                    }),
+                ),
+            );
+
+            results.forEach(result => {
+                result['query']['users'].forEach((user: User) => userGroupsMap.set(user.name, user.groups));
             });
-            users.forEach((user: User) => userGroupsMap.set(user.name, user.groups));
         }
 
         void renderAvatars([...allUserNames]);
