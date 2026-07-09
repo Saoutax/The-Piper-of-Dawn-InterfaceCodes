@@ -12,6 +12,44 @@ interface UserGroup {
     };
 }
 
+interface CacheEntry<T> {
+    data: T;
+    expiry: number;
+}
+
+const CACHE_KEY_PREFIX = 'BWikiUser:';
+const CACHE_TTL = {
+    GROUPS: 24 * 60 * 60 * 1000,
+    AVATAR: 24 * 60 * 60 * 1000,
+    BILIBILI_NICK: 24 * 60 * 60 * 1000,
+};
+
+function cacheGet<T>(key: string): T | null {
+    try {
+        const raw = localStorage.getItem(CACHE_KEY_PREFIX + key);
+        if (!raw) {
+            return null;
+        }
+        const entry: CacheEntry<T> = JSON.parse(raw);
+        if (Date.now() > entry.expiry) {
+            localStorage.removeItem(CACHE_KEY_PREFIX + key);
+            return null;
+        }
+        return entry.data;
+    } catch {
+        return null;
+    }
+}
+
+function cacheSet<T>(key: string, data: T, ttl: number): void {
+    try {
+        const entry: CacheEntry<T> = { data, expiry: Date.now() + ttl };
+        localStorage.setItem(CACHE_KEY_PREFIX + key, JSON.stringify(entry));
+    } catch {
+        // localStorage 不可用，静默失败
+    }
+}
+
 (async () => {
     const wgUserGroups = mw.config.get('wgUserGroups');
     const hasApiHighLimits = wgUserGroups?.includes('sysop') || wgUserGroups?.includes('bot');
@@ -53,7 +91,9 @@ interface UserGroup {
 
     const renderAvatar = (uid: string, data: { face?: string }) => {
         const src = data.face || '';
-        const html = src ? `<img src="${src}" decoding="async">` : '';
+        const html = src
+            ? `<a href="https://space.bilibili.com/${uid}" target="_blank" rel="noopener noreferrer"><img src="${src}" decoding="async"></a>`
+            : '';
         document.querySelectorAll(`.buser_${uid}_avatar`).forEach(el => {
             el.innerHTML = html;
         });
@@ -68,6 +108,14 @@ interface UserGroup {
                     renderAvatar(uid, cached);
                     return;
                 }
+
+                const stored = cacheGet<{ face?: string }>(`avatar:${uid}`);
+                if (stored) {
+                    avatarCache.set(uid, stored);
+                    renderAvatar(uid, stored);
+                    return;
+                }
+
                 try {
                     const res = await fetch(
                         `https://line1-h5-pc-api.biligame.com/game/user/space/user_detail?uid=${uid}`,
@@ -75,6 +123,7 @@ interface UserGroup {
                     const data = (await res.json())?.data;
                     if (data) {
                         avatarCache.set(uid, data);
+                        cacheSet(`avatar:${uid}`, data, CACHE_TTL.AVATAR);
                         renderAvatar(uid, data);
                     }
                 } catch {
@@ -163,22 +212,35 @@ interface UserGroup {
             if (nickname) {
                 insertAvatar(element, username);
                 element.textContent = ' ' + nickname;
-                allUserNames.add(username);
             } else if (/^\d+$/.test(username)) {
                 needApiUids.push(username);
             }
+            allUserNames.add(username);
         });
 
         if (needApiUids.length > 0) {
             const uniqueUids = [...new Set(needApiUids)];
             await Promise.all(
                 uniqueUids.map(async uid => {
+                    const cachedNick = cacheGet<string>(`nick:${uid}`);
+                    if (cachedNick) {
+                        nicknameMap.set(uid, cachedNick);
+                        document
+                            .querySelectorAll<HTMLAnchorElement>(`a.mw-userlink[data-username="${uid}"]`)
+                            .forEach(el => {
+                                insertAvatar(el, uid);
+                                el.textContent = ' ' + cachedNick;
+                                allUserNames.add(uid);
+                            });
+                        return;
+                    }
                     try {
                         const res = await fetch(`https://api.bilibili.com/x/web-interface/card?mid=${uid}`);
                         const json = await res.json();
                         if (json?.code === 0 && json?.data?.card?.name) {
                             const nickname = json.data.card.name;
                             nicknameMap.set(uid, nickname);
+                            cacheSet(`nick:${uid}`, nickname, CACHE_TTL.BILIBILI_NICK);
                             document
                                 .querySelectorAll<HTMLAnchorElement>(`a.mw-userlink[data-username="${uid}"]`)
                                 .forEach(el => {
@@ -200,7 +262,17 @@ interface UserGroup {
 
         await processContent();
 
-        const newUsers = [...allUserNames].filter(u => !beforeKnownUsers.has(u));
+        const newUsers = [...allUserNames].filter(u => {
+            if (beforeKnownUsers.has(u)) {
+                return false;
+            }
+            const cached = cacheGet<string[]>(`group:${u}`);
+            if (cached) {
+                userGroupsMap.set(u, cached);
+                return false;
+            }
+            return true;
+        });
         if (newUsers.length > 0) {
             const chunkSize = hasApiHighLimits ? 500 : 50;
             const chunks: string[][] = [];
@@ -222,7 +294,10 @@ interface UserGroup {
             );
 
             results.forEach(result => {
-                result['query']['users'].forEach((user: User) => userGroupsMap.set(user.name, user.groups));
+                result['query']['users'].forEach((user: User) => {
+                    userGroupsMap.set(user.name, user.groups);
+                    cacheSet(`group:${user.name}`, user.groups, CACHE_TTL.GROUPS);
+                });
             });
         }
 
