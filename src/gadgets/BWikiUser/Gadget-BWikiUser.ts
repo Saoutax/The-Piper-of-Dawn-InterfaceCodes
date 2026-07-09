@@ -51,7 +51,7 @@ function cacheSet<T>(key: string, data: T, ttl: number): void {
 }
 
 (async () => {
-    const wgUserGroups = mw.config.get('wgUserGroups');
+    const { wgUserGroups, wgDBname } = mw.config.get(['wgUserGroups', 'wgDBname']);
     const hasApiHighLimits = wgUserGroups?.includes('sysop') || wgUserGroups?.includes('bot');
 
     const userGroup: UserGroup = {
@@ -266,7 +266,7 @@ function cacheSet<T>(key: string, data: T, ttl: number): void {
             if (beforeKnownUsers.has(u)) {
                 return false;
             }
-            const cached = cacheGet<string[]>(`group:${u}`);
+            const cached = cacheGet<string[]>(`group:${wgDBname}:${u}`);
             if (cached) {
                 userGroupsMap.set(u, cached);
                 return false;
@@ -296,7 +296,7 @@ function cacheSet<T>(key: string, data: T, ttl: number): void {
             results.forEach(result => {
                 result['query']['users'].forEach((user: User) => {
                     userGroupsMap.set(user.name, user.groups);
-                    cacheSet(`group:${user.name}`, user.groups, CACHE_TTL.GROUPS);
+                    cacheSet(`group:${wgDBname}:${user.name}`, user.groups, CACHE_TTL.GROUPS);
                 });
             });
         }
