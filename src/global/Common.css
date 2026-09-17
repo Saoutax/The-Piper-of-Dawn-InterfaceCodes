@@ -4,11 +4,24 @@
 body {
     display: flex;
     flex-direction: column;
+    color: #2f2a24;
+    background-color: #eee8db;
     background-image: url('https://patchwiki.biligame.com/images/pod/2/23/nayx4zzcdrz4ja2qv11hj0344jfo85h.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center center;
+}
+
+body::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+        linear-gradient(rgba(238, 232, 219, 0.56), rgba(238, 232, 219, 0.8)),
+        radial-gradient(circle at 50% 0%, rgba(255, 248, 232, 0.55), transparent 45%);
+    content: '';
+    pointer-events: none;
 }
 
 /* 游戏中心导航、右侧导航、wiki自带的导航、APP相关 */
@@ -23,20 +36,26 @@ body {
 /* 内容区域 */
 .game-bg.container {
     flex: 1 0 auto;
-    background-color: rgba(212, 163, 81, 0.3);
-    margin-top: 30px;
-    margin-bottom: 20px;
+    background-color: rgba(246, 241, 229, 0.75);
+    margin-top: 24px;
+    margin-bottom: 24px;
     width: 85%;
     box-sizing: border-box;
-    border-radius: 15px;
+    border: 1px solid rgba(165, 138, 95, 0.42);
+    border-radius: 10px;
+    box-shadow: 0 10px 32px rgba(44, 35, 24, 0.12);
+    backdrop-filter: blur(2px);
 }
 
 #content.mw-body {
     width: 100%;
     max-width: 100%;
     margin: 0;
-    padding: 20px;
+    padding: 18px;
     box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    color: inherit;
 }
 
 /* 底部 */
