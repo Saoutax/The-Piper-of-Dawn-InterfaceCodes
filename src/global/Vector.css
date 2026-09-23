@@ -275,6 +275,11 @@
     flex: 1 1 0;
     max-width: 72px;
 }
+/* 总览页的图标网格：每行 5 个，窄屏收到 3 个（见文件末尾的窄屏微调） */
+.pod-codex-cell--overview {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
 .pod-codex-cell-name {
     display: block;
     font-size: 12px;
@@ -428,6 +433,11 @@
     }
     .pod-codex-top-name {
         font-size: 20px;
+    }
+    /* 总览网格一行 5 个在手机上太挤，收到 3 个 */
+    .pod-codex-cell--overview {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
     }
 }
 
