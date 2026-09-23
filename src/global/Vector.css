@@ -82,3 +82,353 @@
     border-color: #795548;
     background: #f5ede6;
 }
+
+/* ==== BEGIN 图鉴模板样式 ==== */
+:root {
+    --pod-paper: #ebe9e3;
+    --pod-clay: #c5b18f;
+    --pod-clay-light: #dbd1bb;
+    --pod-heading: #a1895c;
+    --pod-accent: #b99f7a;
+    --pod-ink: #1f1f1f;
+    --pod-radius: 8px;
+    --pod-gap: 10px;
+    --pod-max: 720px;
+}
+/* ---- 根容器：整块图鉴的外框 ---- */
+.pod-codex,
+.pod-codex * {
+    box-sizing: border-box;
+}
+.pod-codex {
+    margin: 0;
+    padding: var(--pod-gap);
+    border: 4px solid var(--pod-clay);
+    border-radius: var(--pod-radius);
+    background: var(--pod-paper);
+    color: var(--pod-ink);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+/* 窄屏安全网：图片一律不超过容器宽度，高度自适应不变形 */
+.pod-codex img {
+    max-width: 100%;
+    height: auto;
+}
+/* ---- 顶部展示卡 ---- */
+.pod-codex-top {
+    width: 100%;
+    max-width: var(--pod-max);
+    margin: var(--pod-gap) auto;
+    padding: var(--pod-gap);
+    border-radius: var(--pod-radius);
+    background: var(--pod-clay-light);
+    text-align: center;
+}
+.pod-codex-top-name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1.4;
+}
+.pod-codex-top-caption {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+/* 顶图并排（种植作物的「产物 + 种子」两列） */
+.pod-codex-top-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-around;
+    gap: 8px;
+}
+.pod-codex-top-col {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+}
+/* ---- 分割线：横线两端各一颗四芒星（星形来自伪元素，换图只改这里） ---- */
+.pod-codex-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 var(--pod-gap);
+    color: var(--pod-accent);
+}
+.pod-codex-divider::before,
+.pod-codex-divider::after {
+    flex: 0 0 auto;
+    content: '✦';
+    font-size: 16px;
+    line-height: 1;
+}
+.pod-codex-divider-line {
+    flex: 1;
+    height: 0;
+    border-top: 1px solid currentColor;
+}
+/* ---- 章节标题 ----
+   皮肤（Vector 系 / Bootstrap 3）会给 h2、h3 加上自己的字号、下边框、
+   外边距和字体族，这里逐项压回去，所以用了 !important。
+   只要标题写在 .pod-codex 里面就生效。 */
+.pod-codex h2.pod-codex-heading,
+.pod-codex h3.pod-codex-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: var(--pod-gap) 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-family: inherit !important;
+    font-size: 17px !important;
+    font-weight: bold !important;
+    line-height: 1.5 !important;
+    color: var(--pod-ink);
+    text-align: center;
+}
+.pod-codex h2.pod-codex-heading::before,
+.pod-codex h3.pod-codex-heading::before {
+    flex: 0 0 auto;
+    content: '✦';
+    color: var(--pod-accent);
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1;
+}
+.pod-codex-heading .mw-editsection {
+    font-size: 12px;
+    font-weight: normal;
+}
+/* ---- 信息框 ---- */
+.pod-codex-box {
+    width: 100%;
+    max-width: var(--pod-max);
+    margin: var(--pod-gap) auto;
+    padding: var(--pod-gap);
+    border-radius: var(--pod-radius);
+    background: var(--pod-clay);
+}
+/* 浅色变体：说明文字、脚注这类不需要强调的内容 */
+.pod-codex-box--plain {
+    background: var(--pod-clay-light);
+}
+/* ---- 信息行：左边字段名、右边数值 ---- */
+.pod-codex-line {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0.6em 0;
+}
+.pod-codex-line:first-child {
+    margin-top: 0;
+}
+.pod-codex-line:last-child {
+    margin-bottom: 0;
+}
+.pod-codex-line-label {
+    flex: 0 0 auto;
+    text-align: left;
+}
+.pod-codex-line-value {
+    min-width: 0;
+    margin-left: auto;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+/* ---- 网格与格子 ---- */
+.pod-codex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px 0;
+}
+.pod-codex-cell {
+    display: flex;
+    flex: 0 0 25%;
+    max-width: 25%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+    text-align: center;
+}
+/* 每行 3 个：对应 Template:物品 的 格=三分之一 */
+.pod-codex-cell--third {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+}
+/* 每行 5 个：对应 格=五分之一（人柴五阶） */
+.pod-codex-cell--fifth {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+/* 自适应窄格：对应 格=自适应（生产配方的材料），一行放不下时自动换行 */
+.pod-codex-cell--auto {
+    flex: 1 1 0;
+    max-width: 72px;
+}
+.pod-codex-cell-name {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+}
+.pod-codex-cell-count {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+}
+/* ---- 图片包裹 ---- */
+.pod-codex-pic {
+    display: inline-block;
+    max-width: 100%;
+}
+/* ---- 折叠块 ----
+   用核心自带的 mw-collapsible（jquery.makeCollapsible），不需要装扩展。
+   展开 / 收起 的链接由核心脚本生成，跟随界面语言。 */
+.pod-codex-collapse {
+    width: 100%;
+    max-width: var(--pod-max);
+    margin: var(--pod-gap) auto;
+    padding: var(--pod-gap);
+    border-radius: var(--pod-radius);
+    background: var(--pod-clay);
+    text-align: center;
+}
+.pod-codex-collapse-title {
+    font-weight: bold;
+}
+.pod-codex-collapse-body {
+    margin-top: 4px;
+}
+.pod-codex-collapse .mw-collapsible-toggle {
+    float: none;
+    display: block;
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+}
+/* ---- 脚注说明 ---- */
+.pod-codex-note {
+    width: 100%;
+    max-width: var(--pod-max);
+    margin: var(--pod-gap) auto;
+    padding: var(--pod-gap);
+    border-radius: var(--pod-radius);
+    background: var(--pod-clay-light);
+    font-size: 12px;
+    line-height: 1.6;
+}
+/* ---- 一页多形态（扑克牌）的形态块 ---- */
+.pod-codex-variant {
+    width: 100%;
+    max-width: var(--pod-max);
+    margin: var(--pod-gap) auto;
+    padding: var(--pod-gap);
+    border-radius: var(--pod-radius);
+    background: var(--pod-clay);
+    text-align: center;
+}
+/* ---- 小图标 ----
+   全部用 CSS 背景图实现，好处是文件还没上传时只是不显示，不会在正文里
+   留下一串红色链接。图标文件要先上传到本 Wiki，文件名见每条规则的注释。
+   本站短路径是 /pod；换到别的站点，把 /pod 换成对方的短路径即可。 */
+.pod-codex-icon {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    margin-right: 2px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    vertical-align: -2px;
+}
+/* 货币 ---------- Money.png / Chips0.png / AlchemyFei.png */
+.pod-codex-icon--money {
+    background-image: url(/pod/Special:FilePath/Money.png);
+}
+.pod-codex-icon--chip {
+    background-image: url(/pod/Special:FilePath/Chips0.png);
+}
+.pod-codex-icon--essence {
+    background-image: url(/pod/Special:FilePath/AlchemyFei.png);
+}
+/* 炼金元素 ---------- Element_Fire.png 等，以太用 Star02.png */
+.pod-codex-icon--fire {
+    background-image: url(/pod/Special:FilePath/Element_Fire.png);
+}
+.pod-codex-icon--water {
+    background-image: url(/pod/Special:FilePath/Element_Water.png);
+}
+.pod-codex-icon--air {
+    background-image: url(/pod/Special:FilePath/Element_Wind.png);
+}
+.pod-codex-icon--earth {
+    background-image: url(/pod/Special:FilePath/Element_Earth.png);
+}
+.pod-codex-icon--ether {
+    background-image: url(/pod/Special:FilePath/Star02.png);
+}
+/* 土壤 ---------- Label_Loam.png 等 */
+.pod-codex-icon--loam {
+    background-image: url(/pod/Special:FilePath/Label_Loam.png);
+}
+.pod-codex-icon--paddy {
+    background-image: url(/pod/Special:FilePath/Label_Water.png);
+}
+.pod-codex-icon--mystic {
+    background-image: url(/pod/Special:FilePath/Label_Sandy.png);
+}
+.pod-codex-icon--lava {
+    background-image: url(/pod/Special:FilePath/Label_Clay.png);
+}
+/* 温度 ---------- Label_Cold.png 等 */
+.pod-codex-icon--cold {
+    background-image: url(/pod/Special:FilePath/Label_Cold.png);
+}
+.pod-codex-icon--mild {
+    background-image: url(/pod/Special:FilePath/Label_Ambient.png);
+}
+.pod-codex-icon--hot {
+    background-image: url(/pod/Special:FilePath/Label_Hot.png);
+}
+/* 湿度 ---------- Label_Dry.png 等 */
+.pod-codex-icon--dry {
+    background-image: url(/pod/Special:FilePath/Label_Dry.png);
+}
+.pod-codex-icon--wet {
+    background-image: url(/pod/Special:FilePath/Label_Wet.png);
+}
+.pod-codex-icon--flood {
+    background-image: url(/pod/Special:FilePath/Label_Flooding.png);
+}
+/* 光照 ---------- Label_Dark.png 等 */
+.pod-codex-icon--dark {
+    background-image: url(/pod/Special:FilePath/Label_Dark.png);
+}
+.pod-codex-icon--dim {
+    background-image: url(/pod/Special:FilePath/Label_Twilight.png);
+}
+.pod-codex-icon--bright {
+    background-image: url(/pod/Special:FilePath/Label_Light.png);
+}
+/* ---- 窄屏微调 ---- */
+@media screen and (max-width: 480px) {
+    .pod-codex {
+        padding: 8px;
+    }
+    .pod-codex-top-name {
+        font-size: 20px;
+    }
+}
+
+/* ==== END 图鉴模板样式 ==== */
