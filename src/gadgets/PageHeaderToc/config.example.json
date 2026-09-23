@@ -1,0 +1,51 @@
+{
+    "nav": {
+        "title": "黎明门前的吹笛人",
+        "icon": "https://patchwiki.biligame.com/images/pod/替换成你的图标.png",
+        "links": [
+            { "text": "首页", "href": "首页" },
+            { "text": "图鉴", "href": "图鉴" },
+            { "text": "玩法", "href": "玩法" },
+            { "text": "社区", "href": "社区" }
+        ]
+    },
+    "panel": {
+        "sections": [
+            {
+                "title": "页面操作",
+                "items": [
+                    { "text": "编辑", "action": "edit" },
+                    { "text": "刷新", "action": "purge" },
+                    { "text": "历史", "action": "history" },
+                    { "text": "短链", "action": "shortlink" },
+                    { "text": "属性", "action": "properties" },
+                    { "text": "移动", "action": "move" },
+                    { "text": "链入", "action": "linkin" },
+                    { "text": "链出", "action": "linkout" }
+                ]
+            },
+            {
+                "title": "常用页面",
+                "items": [
+                    { "text": "最近更改", "href": "特殊:最近更改" },
+                    { "text": "所有页面", "href": "特殊:所有页面" },
+                    { "text": "用户权限", "href": "特殊:用户权限" },
+                    { "text": "特殊页面", "href": "特殊:特殊页面" }
+                ]
+            },
+            {
+                "title": "全站设置",
+                "items": [
+                    { "text": "Common.js", "href": "MediaWiki:Common.js" },
+                    { "text": "Common.css", "href": "MediaWiki:Common.css" },
+                    { "text": "Vector.css", "href": "MediaWiki:Vector.css" },
+                    { "text": "小工具列表", "href": "MediaWiki:Gadgets-definition" }
+                ]
+            }
+        ]
+    },
+    "toc": {
+        "levels": 4,
+        "spy": true
+    }
+}

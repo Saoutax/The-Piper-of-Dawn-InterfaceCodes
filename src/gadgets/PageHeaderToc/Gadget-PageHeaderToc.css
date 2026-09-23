@@ -1,0 +1,650 @@
+/*
+ * 顶栏配色取自站点现有的暖色系（见 src/global/Common.css），
+ * 但自成一套变量，避免和全站样式表互相牵连。
+ */
+:root {
+    --pht-nav-h: 64px;
+    --pht-panel-w: 364px;
+    --pht-toc-w: 232px;
+    --pht-strip-w: 40px;
+
+    --pht-nav-bg: #3b332a;
+    --pht-nav-fg: #f6f1e5;
+    --pht-nav-dim: #c2b5a1;
+    --pht-accent: #dcbe80;
+
+    --pht-line: rgba(165, 138, 95, 0.42);
+    --pht-line-soft: rgba(165, 138, 95, 0.22);
+    --pht-surface: #f7f2e7;
+    --pht-ink: #2f2a24;
+    --pht-ink-dim: #6d6152;
+    --pht-accent-ink: #8a6a2f;
+    --pht-accent-soft: rgba(216, 184, 120, 0.28);
+    --pht-hover: rgba(165, 138, 95, 0.14);
+    --pht-shadow: 0 8px 26px rgba(44, 35, 24, 0.17);
+    --pht-shadow-nav: 0 2px 12px rgba(44, 35, 24, 0.22);
+
+    --pht-z-nav: 9000;
+    --pht-z-toc: 9010;
+    --pht-z-panel: 9020;
+}
+
+/* 顶栏是固定定位，用 padding 把正文整体让开，同时修正锚点跳转的落点 */
+html.pht-has-nav {
+    scroll-padding-top: calc(var(--pht-nav-h) + 12px);
+}
+
+html.pht-has-nav body {
+    padding-top: var(--pht-nav-h);
+}
+
+/* ---------- 顶部导航栏 ---------- */
+
+.pht-nav {
+    position: fixed;
+    z-index: var(--pht-z-nav);
+    inset: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: var(--pht-nav-h);
+    padding: 0 20px;
+    box-sizing: border-box;
+    background: var(--pht-nav-bg);
+    box-shadow: var(--pht-shadow-nav);
+    color: var(--pht-nav-fg);
+    font-size: 15px;
+}
+
+.pht-nav-left,
+.pht-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    /* 搬进来的皮肤控件若自带深色文字，在深色栏上会糊掉，这里兜一层继承色 */
+    color: var(--pht-nav-fg);
+}
+
+.pht-burger {
+    display: inline-flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid rgba(246, 241, 229, 0.22);
+    border-radius: 9px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition:
+        background 0.15s ease-out,
+        border-color 0.15s ease-out,
+        color 0.15s ease-out;
+}
+
+.pht-burger span {
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+}
+
+.pht-burger:hover {
+    border-color: var(--pht-accent);
+    background: rgba(246, 241, 229, 0.08);
+    color: var(--pht-accent);
+}
+
+.pht-logo {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    padding-right: 4px;
+    color: inherit !important;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.15s ease-out;
+}
+
+.pht-logo:hover {
+    color: var(--pht-accent) !important;
+}
+
+.pht-logo-icon {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.pht-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    margin-left: 8px;
+    /* 导航项多到放不下时允许横向滚动，而不是直接裁掉（裁掉就等于点不到） */
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+.pht-nav-links::-webkit-scrollbar {
+    display: none;
+}
+
+.pht-nav-link {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    height: var(--pht-nav-h);
+    padding: 0 16px;
+    color: var(--pht-nav-dim) !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.15s ease-out;
+}
+
+/* 悬停给一块内缩的浅底，而不是整条 64px 铺满 */
+.pht-nav-link::before {
+    position: absolute;
+    z-index: -1;
+    inset: 15px 5px;
+    border-radius: 8px;
+    background: transparent;
+    content: '';
+    transition: background 0.15s ease-out;
+}
+
+.pht-nav-link:hover {
+    color: var(--pht-nav-fg) !important;
+}
+
+.pht-nav-link:hover::before {
+    background: rgba(246, 241, 229, 0.09);
+}
+
+.pht-nav-link.pht-active {
+    color: var(--pht-accent) !important;
+}
+
+.pht-nav-link.pht-active::after {
+    position: absolute;
+    right: 14px;
+    bottom: 0;
+    left: 14px;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--pht-accent);
+    content: '';
+}
+
+/*
+ * 下面两条是给「从 BWiki 皮肤搬进来的控件」兜底的。
+ * 这些节点由皮肤生成，站上结构一旦变动可能需要在真站上再微调。
+ */
+.pht-nav-right > * {
+    flex: 0 0 auto;
+}
+
+.pht-nav-right .nav-search-box {
+    width: min(max(calc(100vw - 1080px), 150px), 260px);
+}
+
+/* 控件搬进顶栏后，皮肤原头部容器已经空了，收起它以免页面顶部留一条空白 */
+html.pht-nav-moved .bili-game-header-nav,
+html.pht-nav-moved .wiki-header {
+    display: none !important;
+}
+
+/* ---------- 侧滑快捷面板 ---------- */
+
+.pht-panel {
+    position: fixed;
+    top: var(--pht-nav-h);
+    bottom: 0;
+    left: 0;
+    z-index: var(--pht-z-panel);
+    width: var(--pht-panel-w);
+    max-width: 100%;
+    padding: 22px 18px 32px;
+    box-sizing: border-box;
+    border-right: 1px solid var(--pht-line);
+    background: var(--pht-surface);
+    box-shadow: var(--pht-shadow);
+    color: var(--pht-ink);
+    overflow-y: auto;
+    transform: translateX(-101%);
+    visibility: hidden;
+    transition:
+        transform 0.18s ease-out,
+        visibility 0.18s;
+}
+
+.pht-panel.is-open {
+    transform: none;
+    visibility: visible;
+}
+
+.pht-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    color: var(--pht-ink-dim);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+}
+
+.pht-panel-title::before {
+    flex: 0 0 auto;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--pht-accent);
+    content: '';
+}
+
+.pht-panel-title:not(:first-child) {
+    margin-top: 2px;
+}
+
+.pht-panel-grid {
+    display: grid;
+    /* 4 列正好让 8 个页面操作排成两整行；列宽按 Common.css 这类最长标签定，避免被硬拆 */
+    grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.pht-panel-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 10px 4px;
+    box-sizing: border-box;
+    border: 1px solid var(--pht-line-soft);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--pht-ink) !important;
+    font-size: 12px;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none !important;
+    overflow-wrap: break-word;
+    transition:
+        background 0.15s ease-out,
+        border-color 0.15s ease-out,
+        box-shadow 0.15s ease-out;
+}
+
+.pht-panel-item:hover {
+    border-color: var(--pht-accent);
+    background: var(--pht-accent-soft);
+    box-shadow: 0 2px 8px rgba(44, 35, 24, 0.1);
+}
+
+/* 窄屏时导航项搬进面板，这里给它们一套竖直的样式 */
+.pht-panel-nav {
+    margin-bottom: 24px;
+}
+
+.pht-panel-nav .pht-nav-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    margin-left: 0;
+    overflow: visible;
+}
+
+.pht-panel-nav .pht-nav-link {
+    height: auto;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--pht-ink) !important;
+    font-size: 14px;
+}
+
+.pht-panel-nav .pht-nav-link:hover {
+    background: var(--pht-hover);
+    color: var(--pht-accent-ink) !important;
+}
+
+.pht-panel-nav .pht-nav-link.pht-active {
+    background: var(--pht-accent-soft);
+    color: var(--pht-accent-ink) !important;
+}
+
+.pht-panel-nav .pht-nav-link.pht-active::after {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 0;
+    width: 3px;
+    height: 20px;
+    border-radius: 0 2px 2px 0;
+    transform: translateY(-50%);
+}
+
+/* ---------- 左侧目录 ---------- */
+
+/* 零尺寸锚点：自身不占位，只负责把窄条和卡片挂在视口左侧的垂直中线上 */
+.pht-toc {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    z-index: var(--pht-z-toc);
+    width: 0;
+    height: 0;
+}
+
+/*
+ * 窄条用顶栏那套深色：页面左边缘是浅米色的背景图，浅色窄条在上面几乎看不见，
+ * 深色才能保证任何页面背景上都一眼能找到入口。
+ * 文字用「逐字成块 + flex 竖排」而不是 writing-mode: vertical-rl —— 后者文字折列时
+ * 列序从右往左，两个字的标签会读成反的。
+ */
+.pht-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: var(--pht-strip-w);
+    padding: 18px 0;
+    box-sizing: border-box;
+    border: 1px solid rgba(246, 241, 229, 0.16);
+    border-left: 0;
+    border-radius: 0 12px 12px 0;
+    background: var(--pht-nav-bg);
+    box-shadow: var(--pht-shadow);
+    color: var(--pht-nav-fg) !important;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition:
+        opacity 0.18s ease-out,
+        background 0.15s ease-out,
+        color 0.15s ease-out;
+}
+
+.pht-strip:hover {
+    background: #4a4136;
+    color: var(--pht-accent) !important;
+}
+
+.pht-strip-char {
+    display: block;
+    font-weight: 500;
+}
+
+.pht-toc.is-open .pht-strip {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pht-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: var(--pht-toc-w);
+    max-height: calc(100vh - var(--pht-nav-h) - 96px);
+    box-sizing: border-box;
+    border: 1px solid var(--pht-line);
+    border-left: 0;
+    border-radius: 0 12px 12px 0;
+    background: var(--pht-surface);
+    box-shadow: var(--pht-shadow);
+    color: var(--pht-ink);
+    overflow: hidden;
+    transform: translate(-101%, -50%);
+    transition: transform 0.18s ease-out;
+}
+
+.pht-toc.is-open .pht-card {
+    transform: translate(0, -50%);
+}
+
+.pht-card-head {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 10px 12px 16px;
+    border-bottom: 1px solid var(--pht-line-soft);
+    background: rgba(165, 138, 95, 0.08);
+}
+
+.pht-card-title {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+}
+
+.pht-card-close {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--pht-ink-dim);
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        background 0.15s ease-out,
+        color 0.15s ease-out;
+}
+
+.pht-card-close:hover {
+    background: var(--pht-hover);
+    color: var(--pht-ink);
+}
+
+.pht-card-body {
+    flex: 1 1 auto;
+    padding: 10px 10px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.pht-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 子级用一条竖线引导，h2/h3/h4 的层级才分得出来 */
+.pht-item > .pht-list {
+    margin-left: 16px;
+    padding-left: 8px;
+    border-left: 1px solid var(--pht-line-soft);
+}
+
+.pht-item.is-collapsed > .pht-list {
+    display: none;
+}
+
+.pht-row {
+    display: flex;
+    align-items: stretch;
+    border-radius: 7px;
+    transition: background 0.12s ease-out;
+}
+
+.pht-row:hover {
+    background: var(--pht-hover);
+}
+
+.pht-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--pht-ink-dim);
+    cursor: pointer;
+    transition: color 0.15s ease-out;
+}
+
+.pht-toggle::before {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid currentColor;
+    content: '';
+    transform-origin: 30% 50%;
+    transition: transform 0.15s ease-out;
+}
+
+/* 展开时三角转向下，收起时指向右 */
+.pht-item:not(.is-collapsed) > .pht-row > .pht-toggle::before {
+    transform: rotate(90deg);
+}
+
+.pht-toggle:hover {
+    color: var(--pht-accent-ink);
+}
+
+.pht-toggle-blank {
+    flex: 0 0 auto;
+    width: 20px;
+}
+
+.pht-link {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+    padding: 5px 8px 5px 2px;
+    border-radius: 0 7px 7px 0;
+    color: var(--pht-ink) !important;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none !important;
+}
+
+.pht-num {
+    flex: 0 0 auto;
+    min-width: 1.7em;
+    color: var(--pht-ink-dim);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.pht-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* 当前章节：整行浅金底 + 文字加重，扫一眼就知道自己在哪 */
+.pht-link.pht-current {
+    background: var(--pht-accent-soft);
+    font-weight: bold;
+}
+
+.pht-link.pht-current .pht-num,
+.pht-link.pht-current .pht-text {
+    color: var(--pht-accent-ink) !important;
+}
+
+/* 自建目录生效后才隐藏皮肤自带目录，脚本失败时原生目录照常显示 */
+body.pht-toc-active #toc {
+    display: none !important;
+}
+
+/* ---------- 窄屏 ---------- */
+
+@media (max-width: 991px) {
+    .pht-nav-right {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --pht-toc-w: min(224px, calc(100vw - 72px));
+        --pht-panel-w: 100%;
+    }
+
+    .pht-nav {
+        padding: 0 14px;
+    }
+
+    .pht-logo-text {
+        display: none;
+    }
+
+    .pht-nav-links {
+        margin-left: 0;
+    }
+}
+
+/* ---------- 键盘可达性 ---------- */
+
+/*
+ * 站点 Common.css 里有一批 `outline: none`（a:focus / .btn:focus 等），
+ * 键盘 Tab 时完全看不到焦点。这里只给 :focus-visible 补回来，鼠标点击不会冒出轮廓。
+ */
+.pht-burger:focus-visible,
+.pht-strip:focus-visible,
+.pht-card-close:focus-visible,
+.pht-toggle:focus-visible,
+.pht-nav-link:focus-visible,
+.pht-logo:focus-visible,
+.pht-panel-item:focus-visible,
+.pht-link:focus-visible {
+    outline: 2px solid var(--pht-accent);
+    outline-offset: 2px;
+}
+
+.pht-nav-link:focus-visible,
+.pht-panel-item:focus-visible,
+.pht-link:focus-visible {
+    outline-offset: -2px;
+}
+
+/* 尊重系统的「减少动态效果」 */
+@media (prefers-reduced-motion: reduce) {
+    .pht-panel,
+    .pht-card,
+    .pht-strip,
+    .pht-nav-link,
+    .pht-nav-link::before,
+    .pht-burger,
+    .pht-logo,
+    .pht-card-close,
+    .pht-panel-item,
+    .pht-row,
+    .pht-toggle::before {
+        transition: none;
+    }
+}
