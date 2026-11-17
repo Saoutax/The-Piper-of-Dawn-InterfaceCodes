@@ -23,11 +23,13 @@ const run = async () => {
                 break;
             default:
                 console.error('未提供有效运行参数。');
-                process.exit();
+                process.exit(1);
         }
         process.exit();
     } catch (error) {
         console.error(`运行时发生错误： ${String(error)}`);
+        // 部署失败必须让 CI 变红，否则异常被吞掉后 workflow 会显示成功
+        process.exitCode = 1;
     }
 };
 
