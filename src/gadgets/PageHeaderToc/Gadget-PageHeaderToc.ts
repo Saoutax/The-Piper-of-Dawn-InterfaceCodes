@@ -474,63 +474,68 @@ const readBarHeight = () => {
             document.body.appendChild(panel);
         }
 
+        // 目录是可选功能：没有标题就只跳过目录，不能提前 return，否则顶栏/面板的
+        // 接线会一起被跳过，按钮渲染出来却点不动（首页、特殊页、编辑页都受影响）。
+        let toc: HTMLElement | null = null,
+            setExpanded: (expanded: boolean, persist: boolean) => void = () => {};
+
         const headings = collectHeadings(config.toc?.levels ?? DEFAULT_LEVELS);
-        if (!headings.length) {
-            return;
-        }
-        const entries = numberHeadings(headings);
+        if (headings.length) {
+            const entries = numberHeadings(headings);
 
-        const toc = el('div', 'pht-toc'),
-            strip = el('button', 'pht-strip'),
-            card = el('nav', 'pht-card'),
-            head = el('div', 'pht-card-head'),
-            close = el('button', 'pht-card-close'),
-            body = el('div', 'pht-card-body');
+            const tocElement = el('div', 'pht-toc'),
+                strip = el('button', 'pht-strip'),
+                card = el('nav', 'pht-card'),
+                head = el('div', 'pht-card-head'),
+                close = el('button', 'pht-card-close'),
+                body = el('div', 'pht-card-body');
 
-        strip.type = 'button';
-        strip.setAttribute('aria-controls', 'pht-card');
-        strip.setAttribute('aria-expanded', 'false');
-        strip.setAttribute('aria-label', '展开目录');
-        // 逐字成块竖排。别改用 writing-mode: vertical-rl —— 文字一旦折成两列，
-        // 列序是从右往左的，视觉上会读成「录目」。
-        for (const char of STRIP_LABEL) {
-            strip.appendChild(el('span', 'pht-strip-char', char));
-        }
-
-        close.type = 'button';
-        close.setAttribute('aria-label', '收起目录');
-        close.textContent = '×';
-
-        body.appendChild(renderNodes(buildTree(entries)));
-        head.append(el('span', 'pht-card-title', '目录'), close);
-
-        card.id = 'pht-card';
-        card.append(head, body);
-        toc.append(strip, card);
-        document.body.appendChild(toc);
-        document.body.classList.add('pht-toc-active');
-
-        const setExpanded = (expanded: boolean, persist: boolean) => {
-            toc.classList.toggle('is-open', expanded);
-            strip.setAttribute('aria-expanded', String(expanded));
-            if (persist) {
-                writeExpanded(expanded);
+            strip.type = 'button';
+            strip.setAttribute('aria-controls', 'pht-card');
+            strip.setAttribute('aria-expanded', 'false');
+            strip.setAttribute('aria-label', '展开目录');
+            // 逐字成块竖排。别改用 writing-mode: vertical-rl —— 文字一旦折成两列，
+            // 列序是从右往左的，视觉上会读成「录目」。
+            for (const char of STRIP_LABEL) {
+                strip.appendChild(el('span', 'pht-strip-char', char));
             }
-        };
 
-        // 窄屏默认收起、宽屏默认展开；用户手动切换过之后一律以记录为准
-        const stored = readExpanded();
-        setExpanded(stored ?? !window.matchMedia(NARROW_QUERY).matches, false);
+            close.type = 'button';
+            close.setAttribute('aria-label', '收起目录');
+            close.textContent = '×';
 
-        strip.addEventListener('click', () => {
-            setExpanded(true, true);
-        });
-        close.addEventListener('click', () => {
-            setExpanded(false, true);
-        });
+            body.appendChild(renderNodes(buildTree(entries)));
+            head.append(el('span', 'pht-card-title', '目录'), close);
 
-        if (config.toc?.spy !== false) {
-            initSpy(card, entries, Boolean(bar));
+            card.id = 'pht-card';
+            card.append(head, body);
+            tocElement.append(strip, card);
+            document.body.appendChild(tocElement);
+            document.body.classList.add('pht-toc-active');
+            toc = tocElement;
+
+            setExpanded = (expanded, persist) => {
+                tocElement.classList.toggle('is-open', expanded);
+                strip.setAttribute('aria-expanded', String(expanded));
+                if (persist) {
+                    writeExpanded(expanded);
+                }
+            };
+
+            // 窄屏默认收起、宽屏默认展开；用户手动切换过之后一律以记录为准
+            const stored = readExpanded();
+            setExpanded(stored ?? !window.matchMedia(NARROW_QUERY).matches, false);
+
+            strip.addEventListener('click', () => {
+                setExpanded(true, true);
+            });
+            close.addEventListener('click', () => {
+                setExpanded(false, true);
+            });
+
+            if (config.toc?.spy !== false) {
+                initSpy(card, entries, Boolean(bar));
+            }
         }
 
         if (!bar || !panel) {
@@ -551,7 +556,7 @@ const readBarHeight = () => {
 
             if (open) {
                 // 面板层级高于目录，同时出现会互相穿透，故临时收起目录且不写入记录
-                restoreToc = toc.classList.contains('is-open');
+                restoreToc = toc?.classList.contains('is-open') ?? false;
                 if (restoreToc) {
                     setExpanded(false, false);
                 }
